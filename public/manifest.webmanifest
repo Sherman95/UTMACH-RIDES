@@ -1,0 +1,21 @@
+{
+  "name": "UTMACH Rides - Carpooling Universitario",
+  "short_name": "UTRides",
+  "description": "Comparte viaje con compañeros de la UTMACH",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#204e99",
+  "icons": [
+    {
+      "src": "/api/icon?size=192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/api/icon?size=512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
