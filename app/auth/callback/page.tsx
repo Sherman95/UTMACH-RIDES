@@ -17,9 +17,15 @@ export default function AuthCallbackPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'SIGNED_IN') {
-        clearTimeout(timeout)
+      clearTimeout(timeout)
 
+      // Password recovery flow — redirect to reset form
+      if (event === 'PASSWORD_RECOVERY') {
+        router.push('/reset-password')
+        return
+      }
+
+      if (event === 'SIGNED_IN') {
         const {
           data: { user },
         } = await supabase.auth.getUser()

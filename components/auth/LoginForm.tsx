@@ -18,11 +18,13 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [resetSent, setResetSent] = useState(false)
+  const [registerSent, setRegisterSent] = useState(false)
 
   function switchMode(newMode: AuthMode) {
     setMode(newMode)
     setError('')
     setResetSent(false)
+    setRegisterSent(false)
   }
 
   function translateError(msg: string): string {
@@ -82,8 +84,15 @@ export function LoginForm() {
 
     try {
       if (mode === 'register') {
-        const { error } = await supabase.auth.signUp({ email, password })
+        const { data, error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
+
+        // If email confirmation is required, user won't be immediately signed in
+        if (data.user && !data.session) {
+          setRegisterSent(true)
+          setLoading(false)
+          return
+        }
 
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
@@ -204,6 +213,38 @@ export function LoginForm() {
 
   return (
     <div className="w-full max-w-sm space-y-5">
+      {/* Registration email sent confirmation */}
+      {registerSent ? (
+        <div className="space-y-5">
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 mx-auto rounded-xl bg-emerald-900/30 flex items-center justify-center">
+              <Mail className="w-6 h-6 text-emerald-400" />
+            </div>
+            <h2 className="text-lg font-bold text-white">Revisa tu correo</h2>
+          </div>
+          <div className="flex items-start gap-3 text-sm bg-emerald-900/20 rounded-xl p-4 border border-emerald-800/30">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+            <div className="text-emerald-300">
+              <p className="font-medium">Cuenta creada exitosamente</p>
+              <p className="text-emerald-400/80 mt-1">
+                Enviamos un enlace de verificacion a <span className="font-semibold text-emerald-300">{email}</span>.
+                Abre tu correo institucional y haz clic en el enlace para activar tu cuenta.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-2 text-xs text-zinc-600">
+            <p>No recibes el correo? Revisa tu carpeta de spam o correo no deseado.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => switchMode('login')}
+            className="w-full text-center text-sm text-brand hover:underline"
+          >
+            Ya verifique mi correo, ingresar
+          </button>
+        </div>
+      ) : (
+      <>
       {/* Tab Switcher */}
       <div className="flex rounded-xl bg-zinc-800/50 p-1">
         <button
@@ -327,6 +368,8 @@ export function LoginForm() {
           ? 'Al registrarte aceptas compartir tus datos con otros usuarios'
           : 'Solo se permiten correos institucionales @utmachala.edu.ec'}
       </p>
+      </>
+      )}
     </div>
   )
 }
