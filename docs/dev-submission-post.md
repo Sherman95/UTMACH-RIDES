@@ -9,14 +9,18 @@ tags: showdev, devchallenge, weekendchallenge, webdev
 
 ## The Community
 
-I'm a computer science student at **Universidad Tecnica de Machala (UTMACH)** in El Oro province, Ecuador. Our university has 14,000+ students spread across **5 campuses** in different cities, and most of us commute daily from **14 different cantons** -- small towns like Pasaje, Santa Rosa, Pinas, Zaruma, El Guabo, and more.
+I'm a computer science student at **Universidad Tecnica de Machala (UTMACH)** in El Oro province, Ecuador. I live in **Pinas**, a small town in the highlands about 1.5 hours from campus. Every day I make that commute, and so do 14,000+ other students spread across **5 campuses** and **14 different cantons** -- Pasaje, Santa Rosa, Zaruma, El Guabo, and more.
 
 Here's the problem: there is **no public transit** connecting most of these towns to the campuses. Students either:
 - Pay $2--3 each way for informal taxi rides (on a student budget, that's $20--30/week)
 - Stand on the highway hoping to catch a shared pickup truck
 - Skip class entirely when they can't afford the ride
 
-Carpooling happens naturally -- students share rides via chaotic WhatsApp groups where messages get buried. There's no structure, no way to search by route, and no way to verify that the driver is actually a UTMACH student.
+But transportation cost isn't the only issue. **Security is a real concern.** Ecuador has been going through a serious spike in crime, and as CS students, we carry our laptops every single day. Taking public transport or flagging random rides on the highway means you're a visible target -- alone, with expensive gear, on a predictable route. Students have been robbed. It's not hypothetical.
+
+That's why riding with **people you can verify are from your own university** matters. It's not just convenience -- it's safety. And that's the core reason UTMACH Rides only allows `@utmachala.edu.ec` emails: if you're in the app, you're a verified UTMACH student. You know the person driving you is your classmate, not a stranger.
+
+Carpooling happens naturally already -- students share rides via chaotic WhatsApp groups where messages get buried. There's no structure, no way to search by route, and no way to verify that the driver is actually a UTMACH student.
 
 I built **UTMACH Rides** to fix this.
 
