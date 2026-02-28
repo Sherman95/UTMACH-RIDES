@@ -79,7 +79,7 @@ export function TripFeed() {
 
   function isCampusName(name: string) {
     return ALL_CAMPUS_NAMES.some(
-      (campus) => name.toLowerCase().includes(campus.toLowerCase()) || campus.toLowerCase().includes(name.toLowerCase())
+      (campus) => campus.toLowerCase() === name.toLowerCase()
     )
   }
 
@@ -88,10 +88,13 @@ export function TripFeed() {
     if (directionFilter === 'to_campus' && !isCampusName(t.destination)) return false
     if (directionFilter === 'from_campus' && !isCampusName(t.origin)) return false
 
-    // Campus filter
+    // Campus filter – match by shortName so pills like "Piñas" find both
+    // the canton and the campus variant in origin/destination
     if (campusFilter) {
-      const matchesOrigin = t.origin.toLowerCase().includes(campusFilter.toLowerCase())
-      const matchesDest = t.destination.toLowerCase().includes(campusFilter.toLowerCase())
+      const campus = CAMPUS_UTMACH.find((c) => c.name === campusFilter)
+      const searchKey = campus ? campus.shortName.toLowerCase() : campusFilter.toLowerCase()
+      const matchesOrigin = t.origin.toLowerCase().includes(searchKey)
+      const matchesDest = t.destination.toLowerCase().includes(searchKey)
       if (!matchesOrigin && !matchesDest) return false
     }
 

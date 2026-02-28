@@ -13,11 +13,7 @@ interface TripCardProps {
 const campusSet = new Set(ALL_CAMPUS_NAMES.map((n) => n.toLowerCase()))
 
 function checkCampus(name: string) {
-  const lower = name.toLowerCase()
-  for (const campus of campusSet) {
-    if (lower.includes(campus) || campus.includes(lower)) return true
-  }
-  return false
+  return campusSet.has(name.toLowerCase())
 }
 
 export const TripCard = memo(function TripCard({ trip }: TripCardProps) {
