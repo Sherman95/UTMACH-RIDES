@@ -78,6 +78,62 @@ UTMACH Rides is a **mobile-first PWA** (Progressive Web App) that lets verified 
 
 ## Demo
 
+### Video Walkthrough
+
+{% embed https://youtu.be/REPLACE_WITH_YOUR_VIDEO_ID %}
+
+> Full demo: signup -> onboarding (cedula + faculty) -> dashboard -> filter rides -> "Me apunto" -> driver accepts via WhatsApp -> rate after trip -> profile stats.
+
+### User Flow
+
+```
+@utmachala.edu.ec signup
+        |
+        v
+  Email verification
+        |
+        v
+  2-step onboarding
+  [Name + Cedula] -> [Faculty + Career + WhatsApp]
+        |
+        v
+   +----+----+
+   |         |
+   v         v
+ DRIVER    PASSENGER
+   |         |
+   v         v
+Publish    Browse feed
+ ride      (filter by direction/campus/canton)
+   |         |
+   v         v
+Receive    Tap "Me apunto"
+requests       |
+   |           v
+   +-----<-----+
+   |
+   v
+3 actions per request:
+  [WhatsApp: verify] [Accept] [Reject]
+        |
+        v
+   Accepted? -> WhatsApp: coordinate pickup
+        |
+        v
+   Trip happens
+        |
+        v
+   Driver marks "Completado"
+   (pending requests auto-rejected)
+        |
+        v
+   Mutual rating
+   Driver <-> Passenger (1-5 stars + comment)
+        |
+        v
+   Stats updated (avg rating, total trips)
+```
+
 ### Live App
 
 **[https://utmach-rides.vercel.app](https://utmach-rides.vercel.app)**
