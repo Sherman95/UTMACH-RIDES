@@ -1,11 +1,17 @@
 export type TripStatus = 'active' | 'completed' | 'cancelled'
 export type BookingStatus = 'pending' | 'accepted' | 'rejected' | 'cancelled'
+export type RequestStatus = 'pending' | 'accepted' | 'rejected'
 
 export type User = {
   id: string
   email: string
   full_name: string | null
   whatsapp_number: string | null
+  cedula: string | null
+  carrera: string | null
+  facultad: string | null
+  average_rating: number | null
+  total_ratings: number
   created_at: string
 }
 
@@ -37,6 +43,24 @@ export type Booking = {
   trip_id: string
   passenger_id: string
   status: BookingStatus
+  created_at: string
+}
+
+export type TripRequest = {
+  id: string
+  trip_id: string
+  passenger_id: string
+  status: RequestStatus
+  created_at: string
+}
+
+export type Rating = {
+  id: string
+  trip_id: string
+  from_user_id: string
+  to_user_id: string
+  score: number
+  comment: string | null
   created_at: string
 }
 
@@ -74,12 +98,20 @@ export type Database = {
           email: string
           full_name?: string | null
           whatsapp_number?: string | null
+          cedula?: string | null
+          carrera?: string | null
+          facultad?: string | null
         }
         Update: {
           id?: string
           email?: string
           full_name?: string | null
           whatsapp_number?: string | null
+          cedula?: string | null
+          carrera?: string | null
+          facultad?: string | null
+          average_rating?: number | null
+          total_ratings?: number
         }
         Relationships: []
       }
@@ -137,6 +169,33 @@ export type Database = {
         }
         Relationships: []
       }
+      trip_requests: {
+        Row: TripRequest
+        Insert: {
+          trip_id: string
+          passenger_id: string
+          status?: RequestStatus
+        }
+        Update: {
+          status?: RequestStatus
+        }
+        Relationships: []
+      }
+      ratings: {
+        Row: Rating
+        Insert: {
+          trip_id: string
+          from_user_id: string
+          to_user_id: string
+          score: number
+          comment?: string | null
+        }
+        Update: {
+          score?: number
+          comment?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -147,6 +206,7 @@ export type Database = {
     Enums: {
       trip_status: TripStatus
       booking_status: BookingStatus
+      request_status: RequestStatus
     }
     CompositeTypes: {
       [_ in never]: never

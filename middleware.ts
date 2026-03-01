@@ -31,12 +31,12 @@ export async function middleware(request: NextRequest) {
     // Check if profile is complete before sending to dashboard
     const { data: profile } = await supabase
       .from('users')
-      .select('full_name, whatsapp_number')
+      .select('full_name, whatsapp_number, cedula, carrera, facultad')
       .eq('id', user.id)
       .single()
 
     const url = request.nextUrl.clone()
-    if (!profile?.full_name || !profile?.whatsapp_number) {
+    if (!profile?.full_name || !profile?.whatsapp_number || !profile?.cedula || !profile?.carrera || !profile?.facultad) {
       url.pathname = '/onboarding'
     } else {
       url.pathname = '/dashboard'

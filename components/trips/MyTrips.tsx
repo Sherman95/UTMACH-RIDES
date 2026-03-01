@@ -20,6 +20,7 @@ import {
   AlertCircle,
   ChevronDown,
 } from 'lucide-react'
+import TripRequests from './TripRequests'
 
 interface TripWithVehicle extends Trip {
   vehicles: Vehicle
@@ -422,6 +423,16 @@ export function MyTrips() {
                       <XCircle className="w-3.5 h-3.5" /> Cancelar
                     </button>
                   </div>
+                )}
+
+                {/* Trip requests — only for active trips */}
+                {canAct && (
+                  <TripRequests
+                    tripId={trip.id}
+                    origin={trip.origin}
+                    destination={trip.destination}
+                    departureTime={trip.departure_time}
+                  />
                 )}
               </>
             )}

@@ -54,7 +54,7 @@ export function TripFeed() {
     try {
       const { data, error } = await supabase
         .from('trips')
-        .select('id, origin, destination, departure_time, seats_available, price_contribution, status, users(full_name, whatsapp_number), vehicles(brand, model, color)')
+        .select('id, driver_id, origin, destination, departure_time, seats_available, price_contribution, status, users(full_name, whatsapp_number, average_rating, total_ratings), vehicles(brand, model, color)')
         .eq('status', 'active')
         .gte('departure_time', new Date().toISOString())
         .order('departure_time', { ascending: true })

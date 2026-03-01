@@ -2,9 +2,10 @@
 
 import { memo, useMemo } from 'react'
 import { TripWithDetails } from '@/types/database'
-import { generateWhatsAppUrl, formatDate, formatTime, getRelativeTime } from '@/lib/utils'
+import { formatDate, formatTime, getRelativeTime } from '@/lib/utils'
 import { ALL_CAMPUS_NAMES } from '@/lib/constants'
-import { MapPin, Clock, Users, DollarSign, MessageCircle, GraduationCap, Building2 } from 'lucide-react'
+import { MapPin, Clock, Users, DollarSign, GraduationCap, Building2, Star } from 'lucide-react'
+import TripRequestButton from './TripRequestButton'
 
 interface TripCardProps {
   trip: TripWithDetails
@@ -17,19 +18,14 @@ function checkCampus(name: string) {
 }
 
 export const TripCard = memo(function TripCard({ trip }: TripCardProps) {
-  const whatsappUrl = useMemo(
-    () =>
-      generateWhatsAppUrl(
-        trip.users.whatsapp_number || '',
-        trip.users.full_name || 'Conductor',
-        trip.origin,
-        formatTime(trip.departure_time)
-      ),
-    [trip.users.whatsapp_number, trip.users.full_name, trip.origin, trip.departure_time]
-  )
-
   const relativeTime = getRelativeTime(trip.departure_time)
   const goesToCampus = checkCampus(trip.destination)
+
+  const driverRating = useMemo(() => {
+    const r = (trip.users as Record<string, unknown>).average_rating as number | null
+    const t = (trip.users as Record<string, unknown>).total_ratings as number | undefined
+    return { rating: r, total: t ?? 0 }
+  }, [trip.users])
 
   return (
     <div className="glass-card rounded-2xl p-4 space-y-3">
@@ -41,7 +37,15 @@ export const TripCard = memo(function TripCard({ trip }: TripCardProps) {
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-white truncate">{trip.users.full_name || 'Conductor'}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="font-semibold text-sm text-white truncate">{trip.users.full_name || 'Conductor'}</p>
+            {driverRating.rating != null && (
+              <span className="flex items-center gap-0.5 text-xs text-amber-400 flex-shrink-0">
+                <Star className="w-3 h-3 fill-amber-400" />
+                {driverRating.rating.toFixed(1)}
+              </span>
+            )}
+          </div>
           <p className="text-xs text-zinc-500 truncate">
             {trip.vehicles.brand} {trip.vehicles.model} · {trip.vehicles.color}
           </p>
@@ -90,16 +94,12 @@ export const TripCard = memo(function TripCard({ trip }: TripCardProps) {
         </span>
       </div>
 
-      {/* WhatsApp CTA */}
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-white font-semibold text-sm transition-colors shadow-lg shadow-brand/20"
-      >
-        <MessageCircle className="w-4 h-4" />
-        Me apunto
-      </a>
+      {/* Request button */}
+      <TripRequestButton
+        tripId={trip.id}
+        driverId={trip.driver_id}
+        seatsAvailable={trip.seats_available}
+      />
     </div>
   )
 })

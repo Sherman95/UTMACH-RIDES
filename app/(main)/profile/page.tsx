@@ -18,6 +18,10 @@ import {
   Car,
   ChevronDown,
   Route,
+  Star,
+  GraduationCap,
+  CreditCard,
+  Building2,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -165,12 +169,43 @@ export default function ProfilePage() {
             <p className="text-[10px] text-zinc-500">Viajes publicados</p>
           </div>
           <div className="glass rounded-xl p-3 text-center">
-            <p className="text-lg font-extrabold text-brand flex items-center justify-center gap-1">
-              <MapPin className="w-4 h-4" /> El Oro
-            </p>
-            <p className="text-[10px] text-zinc-500">Región</p>
+            {authProfile?.average_rating != null ? (
+              <>
+                <p className="text-lg font-extrabold text-amber-400 flex items-center justify-center gap-1">
+                  <Star className="w-4 h-4 fill-amber-400" /> {authProfile.average_rating.toFixed(1)}
+                </p>
+                <p className="text-[10px] text-zinc-500">{authProfile.total_ratings} calificaciones</p>
+              </>
+            ) : (
+              <>
+                <p className="text-lg font-extrabold text-zinc-500">--</p>
+                <p className="text-[10px] text-zinc-500">Sin calificaciones</p>
+              </>
+            )}
           </div>
         </div>
+
+        {/* Academic info */}
+        {authProfile?.carrera && (
+          <div className="mt-3 space-y-1.5">
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
+              <GraduationCap className="w-3.5 h-3.5 text-brand" />
+              <span>{authProfile.carrera}</span>
+            </div>
+            {authProfile.facultad && (
+              <div className="flex items-center gap-2 text-xs text-zinc-400">
+                <Building2 className="w-3.5 h-3.5 text-brand" />
+                <span>{authProfile.facultad}</span>
+              </div>
+            )}
+            {authProfile.cedula && (
+              <div className="flex items-center gap-2 text-xs text-zinc-400">
+                <CreditCard className="w-3.5 h-3.5 text-brand" />
+                <span>CI: {authProfile.cedula.slice(0, 4)}******</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Edit Form */}
