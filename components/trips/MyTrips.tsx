@@ -21,6 +21,7 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import TripRequests from './TripRequests'
+import CompletedPassengers from './CompletedPassengers'
 
 interface TripWithVehicle extends Trip {
   vehicles: Vehicle
@@ -433,6 +434,11 @@ export function MyTrips() {
                     destination={trip.destination}
                     departureTime={trip.departure_time}
                   />
+                )}
+
+                {/* Rating section — only for completed trips */}
+                {trip.status === 'completed' && (
+                  <CompletedPassengers tripId={trip.id} />
                 )}
               </>
             )}

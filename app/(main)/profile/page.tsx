@@ -22,11 +22,15 @@ import {
   GraduationCap,
   CreditCard,
   Building2,
+  Users,
 } from 'lucide-react'
 import Link from 'next/link'
 
 // Lazy load heavy sections - they render below the fold
 const MyTrips = dynamic(() => import('@/components/trips/MyTrips').then(m => ({ default: m.MyTrips })), {
+  loading: () => <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-brand" /></div>,
+})
+const MyPassengerTrips = dynamic(() => import('@/components/trips/MyPassengerTrips').then(m => ({ default: m.MyPassengerTrips })), {
   loading: () => <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-brand" /></div>,
 })
 const VehicleManager = dynamic(() => import('@/components/vehicles/VehicleManager').then(m => ({ default: m.VehicleManager })), {
@@ -48,6 +52,7 @@ export default function ProfilePage() {
   const [whatsapp, setWhatsapp] = useState('')
   const [showVehicles, setShowVehicles] = useState(false)
   const [showTrips, setShowTrips] = useState(false)
+  const [showPassengerTrips, setShowPassengerTrips] = useState(false)
 
   // Sync form fields from auth context
   useEffect(() => {
@@ -303,6 +308,25 @@ export default function ProfilePage() {
         {showTrips && (
           <div className="mt-3">
             <MyTrips />
+          </div>
+        )}
+      </div>
+
+      {/* My Passenger Trips - Collapsible */}
+      <div className="mb-4 animate-fade-in-up stagger-2">
+        <button
+          onClick={() => setShowPassengerTrips(!showPassengerTrips)}
+          className="w-full flex items-center justify-between py-3 px-4 glass-card rounded-xl hover:bg-zinc-800/30 transition-colors"
+        >
+          <span className="font-bold text-white flex items-center gap-2">
+            <Users className="w-4 h-4 text-brand" />
+            Viajes como pasajero
+          </span>
+          <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform ${showPassengerTrips ? 'rotate-180' : ''}`} />
+        </button>
+        {showPassengerTrips && (
+          <div className="mt-3">
+            <MyPassengerTrips />
           </div>
         )}
       </div>
