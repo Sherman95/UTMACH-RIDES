@@ -4,7 +4,7 @@ import { memo, useMemo } from 'react'
 import { TripWithDetails } from '@/types/database'
 import { formatDate, formatTime, getRelativeTime } from '@/lib/utils'
 import { ALL_CAMPUS_NAMES } from '@/lib/constants'
-import { MapPin, Clock, Users, DollarSign, GraduationCap, Building2, Star } from 'lucide-react'
+import { MapPin, Clock, Users, DollarSign, GraduationCap, Building2, Star, Route } from 'lucide-react'
 import TripRequestButton from './TripRequestButton'
 
 interface TripCardProps {
@@ -21,10 +21,12 @@ export const TripCard = memo(function TripCard({ trip }: TripCardProps) {
   const relativeTime = getRelativeTime(trip.departure_time)
   const goesToCampus = checkCampus(trip.destination)
 
-  const driverRating = useMemo(() => {
-    const r = (trip.users as Record<string, unknown>).average_rating as number | null
-    const t = (trip.users as Record<string, unknown>).total_ratings as number | undefined
-    return { rating: r, total: t ?? 0 }
+  const driverStats = useMemo(() => {
+    const u = trip.users as Record<string, unknown>
+    const r = u.average_rating as number | null
+    const t = (u.total_ratings as number) ?? 0
+    const trips = (u.total_trips as number) ?? 0
+    return { rating: r, totalRatings: t, totalTrips: trips }
   }, [trip.users])
 
   return (
@@ -39,10 +41,16 @@ export const TripCard = memo(function TripCard({ trip }: TripCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <p className="font-semibold text-sm text-white truncate">{trip.users.full_name || 'Conductor'}</p>
-            {driverRating.rating != null && (
+            {driverStats.rating != null && (
               <span className="flex items-center gap-0.5 text-xs text-amber-400 flex-shrink-0">
                 <Star className="w-3 h-3 fill-amber-400" />
-                {driverRating.rating.toFixed(1)}
+                {driverStats.rating.toFixed(1)}
+              </span>
+            )}
+            {driverStats.totalTrips > 0 && (
+              <span className="flex items-center gap-0.5 text-[10px] text-zinc-400 flex-shrink-0">
+                <Route className="w-2.5 h-2.5" />
+                {driverStats.totalTrips}
               </span>
             )}
           </div>

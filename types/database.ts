@@ -12,6 +12,7 @@ export type User = {
   facultad: string | null
   average_rating: number | null
   total_ratings: number
+  total_trips: number
   created_at: string
 }
 
@@ -112,6 +113,7 @@ export type Database = {
           facultad?: string | null
           average_rating?: number | null
           total_ratings?: number
+          total_trips?: number
         }
         Relationships: []
       }

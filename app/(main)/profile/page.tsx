@@ -168,10 +168,10 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           <div className="glass rounded-xl p-3 text-center">
-            <p className="text-lg font-extrabold text-brand">{tripCount}</p>
-            <p className="text-[10px] text-zinc-500">Viajes publicados</p>
+            <p className="text-lg font-extrabold text-brand">{authProfile?.total_trips ?? tripCount}</p>
+            <p className="text-[10px] text-zinc-500">Viajes</p>
           </div>
           <div className="glass rounded-xl p-3 text-center">
             {authProfile?.average_rating != null ? (
@@ -179,14 +179,18 @@ export default function ProfilePage() {
                 <p className="text-lg font-extrabold text-amber-400 flex items-center justify-center gap-1">
                   <Star className="w-4 h-4 fill-amber-400" /> {authProfile.average_rating.toFixed(1)}
                 </p>
-                <p className="text-[10px] text-zinc-500">{authProfile.total_ratings} calificaciones</p>
+                <p className="text-[10px] text-zinc-500">{authProfile.total_ratings} calif.</p>
               </>
             ) : (
               <>
                 <p className="text-lg font-extrabold text-zinc-500">--</p>
-                <p className="text-[10px] text-zinc-500">Sin calificaciones</p>
+                <p className="text-[10px] text-zinc-500">Sin calif.</p>
               </>
             )}
+          </div>
+          <div className="glass rounded-xl p-3 text-center">
+            <p className="text-lg font-extrabold text-brand">{tripCount}</p>
+            <p className="text-[10px] text-zinc-500">Publicados</p>
           </div>
         </div>
 

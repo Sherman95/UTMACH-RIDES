@@ -14,6 +14,7 @@ interface UserProfile {
   facultad: string | null
   average_rating: number | null
   total_ratings: number
+  total_trips: number
 }
 
 interface AuthContextType {
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { data, error: profileError } = await supabase
         .from('users')
-        .select('id, email, full_name, whatsapp_number, cedula, carrera, facultad, average_rating, total_ratings')
+        .select('id, email, full_name, whatsapp_number, cedula, carrera, facultad, average_rating, total_ratings, total_trips')
         .eq('id', userId)
         .single()
 
