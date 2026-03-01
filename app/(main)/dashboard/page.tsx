@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('trips').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+      supabase.from('trips').select('id', { count: 'exact', head: true }).eq('status', 'active').gte('departure_time', new Date().toISOString()),
       supabase.from('users').select('id', { count: 'exact', head: true }),
     ]).then(([tripRes, userRes]) => {
       if (tripRes.error || userRes.error) {

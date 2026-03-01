@@ -158,14 +158,32 @@ export function LoginForm() {
         </div>
 
         {resetSent ? (
-          <div className="flex items-start gap-3 text-sm bg-emerald-900/20 rounded-xl p-4 border border-emerald-800/30">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-            <div className="text-emerald-300">
-              <p className="font-medium">Correo enviado</p>
-              <p className="text-emerald-400/80 mt-1">
-                Revisa tu bandeja de entrada en <span className="font-semibold">{email}</span> y sigue el enlace para restablecer tu contrasena.
-              </p>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3 text-sm bg-emerald-900/20 rounded-xl p-4 border border-emerald-800/30">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <div className="text-emerald-300">
+                <p className="font-medium">Correo enviado</p>
+                <p className="text-emerald-400/80 mt-1">
+                  Revisa tu bandeja de entrada en <span className="font-semibold">{email}</span> y sigue el enlace para restablecer tu contrasena.
+                </p>
+              </div>
             </div>
+            <div className="flex items-start gap-3 text-sm bg-amber-900/20 rounded-xl p-4 border border-amber-800/30">
+              <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="text-amber-300">
+                <p className="font-medium">No lo encuentras?</p>
+                <p className="text-amber-400/80 mt-1">
+                  Revisa tu carpeta de <strong>spam</strong> o <strong>correo no deseado</strong>. El correo puede tardar hasta 2 minutos en llegar.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => switchMode('login')}
+              className="w-full text-center text-sm text-brand hover:underline"
+            >
+              Volver al login
+            </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -233,7 +251,7 @@ export function LoginForm() {
             </div>
           </div>
           <div className="space-y-2 text-xs text-zinc-600">
-            <p>No recibes el correo? Revisa tu carpeta de spam o correo no deseado.</p>
+            <p>No recibes el correo? Revisa tu carpeta de <strong className="text-zinc-500">spam</strong> o <strong className="text-zinc-500">correo no deseado</strong>. Puede tardar hasta 2 minutos.</p>
           </div>
           <button
             type="button"

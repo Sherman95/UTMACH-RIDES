@@ -69,21 +69,27 @@ export default function OnboardingPage() {
 
     setSaving(true)
 
-    const { error } = await supabase
-      .from('users')
-      .update({
-        full_name: fullName.trim(),
-        whatsapp_number: whatsapp.trim(),
-      })
-      .eq('id', userId!)
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({
+          full_name: fullName.trim(),
+          whatsapp_number: whatsapp.trim(),
+        })
+        .eq('id', userId!)
 
-    if (error) {
-      setError(error.message)
+      if (error) throw error
+
+      // Force Next.js to re-run middleware (which checks profile completeness)
+      router.refresh()
+      // Small delay to let middleware pick up the updated profile
+      await new Promise((r) => setTimeout(r, 500))
+      router.push('/dashboard')
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error al guardar tu perfil. Intenta de nuevo.'
+      setError(message)
       setSaving(false)
-      return
     }
-
-    router.push('/dashboard')
   }
 
   if (loading) {
