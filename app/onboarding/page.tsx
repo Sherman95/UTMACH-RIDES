@@ -225,7 +225,7 @@ export default function OnboardingPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Ronald Alejandro Azuero Maldonado"
+                  placeholder="Nombres y Apellidos Ej: Juan Carlos Perez Lopez"
                   value={fullName}
                   onChange={(e) => {
                     setFullName(e.target.value)

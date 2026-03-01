@@ -12,6 +12,7 @@ import {
   GraduationCap,
   AlertCircle,
   Inbox,
+  UserMinus,
 } from 'lucide-react'
 
 type PassengerInfo = {
@@ -76,7 +77,7 @@ export default function TripRequests({
 
   useEffect(() => { loadRequests() }, [loadRequests])
 
-  async function handleAction(requestId: string, action: 'accepted' | 'rejected') {
+  async function handleAction(requestId: string, action: 'accepted' | 'rejected', wasAccepted = false) {
     setActionLoading(requestId)
     setError('')
 
@@ -104,12 +105,40 @@ export default function TripRequests({
         }
       }
 
+      // If revoking an accepted passenger, re-increment seat
+      if (wasAccepted) {
+        const { data: trip } = await supabase
+          .from('trips')
+          .select('seats_available')
+          .eq('id', tripId)
+          .single()
+
+        if (trip) {
+          await supabase
+            .from('trips')
+            .update({ seats_available: trip.seats_available + 1 })
+            .eq('id', tripId)
+        }
+      }
+
       await loadRequests()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al actualizar')
     } finally {
       setActionLoading(null)
     }
+  }
+
+  function buildVerifyWhatsAppUrl(passenger: PassengerInfo): string {
+    const phone = (passenger.whatsappNumber ?? '').replace(/\D/g, '').replace(/^0/, '593')
+    const time = new Date(departureTime).toLocaleString('es-EC', {
+      weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+    })
+    const msg = encodeURIComponent(
+      `Hola ${passenger.fullName.split(' ')[0]}! Vi tu solicitud en UTMACH Rides ` +
+      `para ir de ${origin} a ${destination} el ${time}. Puedes confirmar que si vas?`
+    )
+    return `https://wa.me/${phone}?text=${msg}`
   }
 
   function buildWhatsAppUrl(passenger: PassengerInfo): string {
@@ -187,6 +216,15 @@ export default function TripRequests({
                   )}
                 </div>
                 <div className="flex items-center gap-1.5">
+                  <a
+                    href={buildVerifyWhatsAppUrl(r)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-green-900/20 hover:bg-green-900/40 border border-green-800/30 text-green-400 transition"
+                    title="Verificar por WhatsApp"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                  </a>
                   <button
                     onClick={() => handleAction(r.requestId, 'rejected')}
                     disabled={actionLoading === r.requestId}
@@ -218,23 +256,33 @@ export default function TripRequests({
           </p>
           {accepted.map((r) => (
             <div key={r.requestId} className="p-2.5 rounded-xl bg-emerald-900/10 border border-emerald-800/20">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-white">{r.fullName}</p>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-white truncate">{r.fullName}</p>
                   {r.carrera && (
                     <p className="text-[10px] text-zinc-400 flex items-center gap-1 mt-0.5">
                       <GraduationCap className="w-2.5 h-2.5" /> {r.carrera}
                     </p>
                   )}
                 </div>
-                <a
-                  href={buildWhatsAppUrl(r)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-1.5 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-semibold transition flex items-center gap-1"
-                >
-                  <MessageCircle className="w-3 h-3" /> WhatsApp
-                </a>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => handleAction(r.requestId, 'rejected', true)}
+                    disabled={actionLoading === r.requestId}
+                    className="p-1.5 rounded-lg bg-red-900/20 hover:bg-red-900/40 border border-red-800/30 text-red-400 transition disabled:opacity-50"
+                    title="Revocar aceptacion"
+                  >
+                    {actionLoading === r.requestId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserMinus className="w-3.5 h-3.5" />}
+                  </button>
+                  <a
+                    href={buildWhatsAppUrl(r)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-1.5 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-semibold transition flex items-center gap-1"
+                  >
+                    <MessageCircle className="w-3 h-3" /> WhatsApp
+                  </a>
+                </div>
               </div>
             </div>
           ))}

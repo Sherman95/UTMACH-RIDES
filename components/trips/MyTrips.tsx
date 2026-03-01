@@ -34,6 +34,7 @@ export function MyTrips() {
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState(false)
   const [showAll, setShowAll] = useState(false)
+  const [pendingCounts, setPendingCounts] = useState<Record<string, number>>({})
 
   // Edit state
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -66,7 +67,28 @@ export function MyTrips() {
         .limit(20)
 
       if (error) throw error
-      if (data) setTrips(data as unknown as TripWithVehicle[])
+      if (data) {
+        const typedData = data as unknown as TripWithVehicle[]
+        setTrips(typedData)
+
+        // Fetch pending request counts for active trips
+        const activeIds = typedData.filter(t => t.status === 'active').map(t => t.id)
+        if (activeIds.length > 0) {
+          const { data: reqData } = await supabase
+            .from('trip_requests')
+            .select('trip_id')
+            .in('trip_id', activeIds)
+            .eq('status', 'pending')
+
+          if (reqData) {
+            const counts: Record<string, number> = {}
+            reqData.forEach((r: { trip_id: string }) => {
+              counts[r.trip_id] = (counts[r.trip_id] || 0) + 1
+            })
+            setPendingCounts(counts)
+          }
+        }
+      }
     } catch {
       setFetchError(true)
     } finally {
@@ -85,7 +107,20 @@ export function MyTrips() {
         .eq('id', tripId)
 
       if (err) throw err
+
+      // Auto-reject all pending requests when completing or cancelling
+      await supabase
+        .from('trip_requests')
+        .update({ status: 'rejected' })
+        .eq('trip_id', tripId)
+        .eq('status', 'pending')
+
       setTrips(trips.map((t) => (t.id === tripId ? { ...t, status } : t)))
+      setPendingCounts(prev => {
+        const next = { ...prev }
+        delete next[tripId]
+        return next
+      })
     } catch {
       setError('Error al actualizar el estado del viaje')
     }
@@ -266,6 +301,11 @@ export function MyTrips() {
                 <p className="text-sm font-semibold text-white truncate">
                   {trip.origin} → {trip.destination}
                 </p>
+                {pendingCounts[trip.id] > 0 && (
+                  <span className="flex-shrink-0 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 animate-pulse">
+                    {pendingCounts[trip.id]}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 {canEdit && !isEditing && (
