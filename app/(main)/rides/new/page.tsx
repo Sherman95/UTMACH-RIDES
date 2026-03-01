@@ -25,7 +25,6 @@ import {
 import Link from 'next/link'
 
 export default function NewRidePage() {
-  // Guard against double-submit
   const submittingRef = useRef(false)
   const router = useRouter()
   const { user } = useAuth()
@@ -105,7 +104,6 @@ export default function NewRidePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (submittingRef.current) return
     setError('')
 
     if (!canton) {
@@ -140,7 +138,6 @@ export default function NewRidePage() {
     }
 
     setLoading(true)
-    submittingRef.current = true
 
     try {
       if (!user) throw new Error('No autenticado')
@@ -186,7 +183,6 @@ export default function NewRidePage() {
       const message =
         err instanceof Error ? err.message : 'Error al crear el viaje'
       setError(message)
-      submittingRef.current = false
     } finally {
       setLoading(false)
     }
